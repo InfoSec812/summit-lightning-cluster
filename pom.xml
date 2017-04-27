@@ -14,6 +14,7 @@
         <vertx.verticle>com.redhat.labs.vertx.cluster.MainVerticle</vertx.verticle>
         <!-- Maven plugins -->
         <fabric8-vertx-maven-plugin.version>1.0.6</fabric8-vertx-maven-plugin.version>
+        <cluster.ip>127.0.0.1</cluster.ip>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -69,8 +70,11 @@
                         <argument>-jar</argument>
                         <argument>target/cluster-1.0-SNAPSHOT.jar</argument>
                         <argument>-cluster</argument>
+                        <argument>-cluster-host</argument>
+                        <argument>${cluster.ip}</argument>
                         <argument>-Djava.net.preferIPv4Stack=true</argument>
-                        <argument>-Djgroups.bind_addr=127.0.0.1</argument>
+                        <argument>-Djgroups.tcp.address=${cluster.ip}</argument>
+                        <argument>-Djgroups.mping.mcast_addr=239.5.5.5</argument>
                     </arguments>
                 </configuration>
             </plugin>
