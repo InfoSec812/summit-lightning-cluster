@@ -19,11 +19,11 @@ or
 
 ## Run With Clustering
 
-`mvn exec:exec`
+`mvn exec:exec -Dcluster.ip=<IP>`
 
 or
 
-`java -jar target/cluster-<version>.jar -cluster -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=127.0.0.1`
+`java -jar target/cluster-<version>.jar -cluster -cluster-host <IP> -Djava.net.preferIPv4Stack=true -Djgroups.tcp.address=<IP> -Djgroups.mping.mcast_addr=239.5.5.5`
 
 ### NOTE:
 
