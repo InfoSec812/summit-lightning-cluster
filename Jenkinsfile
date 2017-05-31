@@ -16,7 +16,7 @@ node (''){
     env.UBER_JAR_CONTEXT_DIR = "target/"
 
     // this value should also include switches like -D and -P
-    env.MVN_COMMAND = "clean sonar:sonar deploy -Dhsql"
+    env.MVN_COMMAND = "clean package sonar:sonar deploy -Dhsql"
 
     // leave these alone unless you really know what you are doing
     env.MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY = "nexus::default::http://nexus:8081/repository/labs-snapshots"
