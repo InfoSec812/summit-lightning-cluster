@@ -15,6 +15,8 @@
         <!-- Maven plugins -->
         <fabric8-vertx-maven-plugin.version>1.0.6</fabric8-vertx-maven-plugin.version>
         <cluster.ip>127.0.0.1</cluster.ip>
+        <fabric8.mode>openshift</fabric8.mode>
+        <fabric8.build.strategy>docker</fabric8.build.strategy>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -40,6 +42,25 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-rx-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-cloud</artifactId>
+        <version>9.0.0.Final</version>
+        <exclusions>
+            <exclusion>
+                <groupId>org.jgroups</groupId>
+                <artifactId>jgroups</artifactId>
+            </exclusion>
+            <exclusion>
+                <artifactId>undertow-core</artifactId>
+                <groupId>io.undertow</groupId>
+            </exclusion>
+        </exclusions>
+      </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -76,6 +97,104 @@
                         <argument>-Djgroups.tcp.address=${cluster.ip}</argument>
                         <argument>-Djgroups.mping.mcast_addr=239.5.5.5</argument>
                     </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <version>3.5.28</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resource</goal>
+                            <goal>build</goal>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>cluster-example</name>
+                            <alias>cluster-example</alias>
+                            <build>
+                                <from>fabric8/s2i-java:latest</from>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                    <permissions>auto</permissions>
+                                    <basedir>/deployments</basedir>
+                                </assembly>
+                                <cmd>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-jar</arg>
+                                        <arg>/deployments/${project.build.finalName}.${project.packaging}</arg>
+                                        <arg>-Djboss.default.jgroups.stack=kubernetes</arg>
+                                        <arg>-cluster</arg>
+                                    </exec>
+                                </cmd>
+                                <labels>
+                                    <app>cluster-example</app>
+                                </labels>
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-jar</arg>
+                                        <arg>/deployments/${project.build.finalName}.${project.packaging}</arg>
+                                        <arg>-Djboss.default.jgroups.stack=kubernetes</arg>
+                                        <arg>-cluster</arg>
+                                    </exec>
+                                </entryPoint>
+                                <ports>
+                                    <port>5600</port>
+                                    <port>5700</port>
+                                    <port>5601</port>
+                                    <port>5701</port>
+                                    <port>5602</port>
+                                    <port>5702</port>
+                                    <port>8778</port>
+                                    <port>8888</port>
+                                    <port>8080</port>
+                                    <port>7800</port>
+                                    <port>7801</port>
+                                    <port>7802</port>
+                                </ports>
+                            </build>
+                        </image>
+                    </images>
+                    <resources>
+                        <labels>
+                            <all>
+                                <property>
+                                    <name>app</name>
+                                    <value>cluster-example</value>
+                                </property>
+                            </all>
+                        </labels>
+<!--                        <deployment>
+                            <name>cluster-example</name>
+                            <replicas>2</replicas>
+                            <containers>
+                                <container>
+                                    <alias>cluster-example</alias>
+                                    <ports>
+                                        <port>5600</port>
+                                        <port>5700</port>
+                                        <port>5601</port>
+                                        <port>5701</port>
+                                        <port>5602</port>
+                                        <port>5702</port>
+                                        <port>8778</port>
+                                        <port>8888</port>
+                                        <port>8080</port>
+                                        <port>7800</port>
+                                        <port>7801</port>
+                                        <port>7802</port>
+                                    </ports>
+                                </container>
+                            </containers>
+                        </deployment>-->
+                    </resources>
                 </configuration>
             </plugin>
         </plugins>

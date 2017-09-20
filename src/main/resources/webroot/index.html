@@ -1,0 +1,35 @@
+<html>
+<script language="JavaScript">
+    var startSec = 470;
+    var remTime = startSec;
+
+    function pad(num, size) {
+        var s = num+"";
+        while (s.length < size) s = "0" + s;
+        return s;
+    }
+
+    var setTimeDisplay = function () {
+        var minutes = Math.floor(remTime/60);
+        var seconds = remTime % 60;
+        remTime--;
+        document.getElementById('timer').innerHTML = minutes+":"+pad(seconds, 2);
+    };
+
+    window.setInterval(setTimeDisplay, 1000);
+</script>
+<style>
+.body {
+    width: 100%;
+    height: 100%;
+}
+.timer {
+    font-size: 96pt;
+    padding-left: 200px;
+    padding-top: 200px;
+}
+</style>
+<body class="body">
+<div id="timer" class="timer"></div>
+</body>
+</html>

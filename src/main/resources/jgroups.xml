@@ -1,0 +1,13 @@
+<config xmlns="urn:org:jgroups"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.0.xsd">
+    <TCP
+            bind_addr="match-interface:eth.*"
+            bind_port="7800"
+    />
+    <kubernetes.KUBE_PING
+            port_range="2"
+            namespace="${KUBE_NAMESPACE:production}"
+            labels="${KUBE_LABEL:app=cluster-example}"
+    />
+</config>
