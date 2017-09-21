@@ -2,12 +2,22 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.0.xsd">
     <TCP
-            bind_addr="match-interface:eth.*"
+            bind_addr="NON_LOOPBACK"
             bind_port="7800"
+            enable_diagnostics="false"
+            thread_naming_pattern="pl"
+            send_buf_size="640k"
+            sock_conn_timeout="300"
+            bundler_type="no-bundler"
+            logical_addr_cache_expiration="360000"
+
+            thread_pool.min_threads="${jgroups.thread_pool.min_threads:0}"
+            thread_pool.max_threads="${jgroups.thread_pool.max_threads:200}"
+            thread_pool.keep_alive_time="60000"
     />
     <kubernetes.KUBE_PING
             port_range="2"
-            namespace="${KUBE_NAMESPACE:production}"
+            namespace="${KUBE_NAMESPACE:labs-dev}"
             labels="${KUBE_LABEL:app=cluster-example}"
     />
 </config>

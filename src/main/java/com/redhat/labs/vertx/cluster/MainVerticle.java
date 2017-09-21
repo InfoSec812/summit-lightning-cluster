@@ -7,6 +7,8 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
 
+import java.util.stream.Collectors;
+
 import static java.util.UUID.randomUUID;
 
 /**
@@ -41,5 +43,6 @@ public class MainVerticle extends AbstractVerticle {
 
     void handleMessage(Message<String> msg) {
         LOG.error(msg.body());
+        LOG.error(msg.headers().names().stream().collect(Collectors.joining(",")));
     }
 }

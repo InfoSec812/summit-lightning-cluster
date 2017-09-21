@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redhat.labs.vertx</groupId>
-    <artifactId>cluster</artifactId>
+    <artifactId>cluster-example</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -10,13 +10,13 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- vert.x properties -->
-        <vertx.version>3.4.1</vertx.version>
+        <vertx.version>3.4.2</vertx.version>
         <vertx.verticle>com.redhat.labs.vertx.cluster.MainVerticle</vertx.verticle>
         <!-- Maven plugins -->
         <fabric8-vertx-maven-plugin.version>1.0.6</fabric8-vertx-maven-plugin.version>
-        <cluster.ip>127.0.0.1</cluster.ip>
         <fabric8.mode>openshift</fabric8.mode>
         <fabric8.build.strategy>docker</fabric8.build.strategy>
+        <ispn.cluster.labels>cluster=${project.artifactId}</ispn.cluster.labels>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -37,6 +37,12 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-infinispan</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>infinispan-core</artifactId>
+                    <groupId>org.infinispan</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
@@ -48,19 +54,29 @@
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>9.1.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cloud</artifactId>
-        <version>9.0.0.Final</version>
-        <exclusions>
-            <exclusion>
-                <groupId>org.jgroups</groupId>
-                <artifactId>jgroups</artifactId>
-            </exclusion>
-            <exclusion>
-                <artifactId>undertow-core</artifactId>
-                <groupId>io.undertow</groupId>
-            </exclusion>
-        </exclusions>
-      </dependency>
+            <version>9.1.1.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jgroups</groupId>
+                    <artifactId>jgroups</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>undertow-core</artifactId>
+                    <groupId>io.undertow</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jgroups.kubernetes</groupId>
+            <artifactId>jgroups-kubernetes</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -91,10 +107,7 @@
                         <argument>-jar</argument>
                         <argument>target/cluster-1.0-SNAPSHOT.jar</argument>
                         <argument>-cluster</argument>
-                        <argument>-cluster-host</argument>
-                        <argument>${cluster.ip}</argument>
                         <argument>-Djava.net.preferIPv4Stack=true</argument>
-                        <argument>-Djgroups.tcp.address=${cluster.ip}</argument>
                         <argument>-Djgroups.mping.mcast_addr=239.5.5.5</argument>
                     </arguments>
                 </configuration>
@@ -171,29 +184,29 @@
                                 </property>
                             </all>
                         </labels>
-<!--                        <deployment>
-                            <name>cluster-example</name>
-                            <replicas>2</replicas>
-                            <containers>
-                                <container>
-                                    <alias>cluster-example</alias>
-                                    <ports>
-                                        <port>5600</port>
-                                        <port>5700</port>
-                                        <port>5601</port>
-                                        <port>5701</port>
-                                        <port>5602</port>
-                                        <port>5702</port>
-                                        <port>8778</port>
-                                        <port>8888</port>
-                                        <port>8080</port>
-                                        <port>7800</port>
-                                        <port>7801</port>
-                                        <port>7802</port>
-                                    </ports>
-                                </container>
-                            </containers>
-                        </deployment>-->
+                        <!--                        <deployment>
+                                                    <name>cluster-example</name>
+                                                    <replicas>2</replicas>
+                                                    <containers>
+                                                        <container>
+                                                            <alias>cluster-example</alias>
+                                                            <ports>
+                                                                <port>5600</port>
+                                                                <port>5700</port>
+                                                                <port>5601</port>
+                                                                <port>5701</port>
+                                                                <port>5602</port>
+                                                                <port>5702</port>
+                                                                <port>8778</port>
+                                                                <port>8888</port>
+                                                                <port>8080</port>
+                                                                <port>7800</port>
+                                                                <port>7801</port>
+                                                                <port>7802</port>
+                                                            </ports>
+                                                        </container>
+                                                    </containers>
+                                                </deployment>-->
                     </resources>
                 </configuration>
             </plugin>
