@@ -16,6 +16,7 @@
         <fabric8-vertx-maven-plugin.version>1.0.6</fabric8-vertx-maven-plugin.version>
         <fabric8.mode>openshift</fabric8.mode>
         <fabric8.build.strategy>docker</fabric8.build.strategy>
+        <fabric8.build.recreate>all</fabric8.build.recreate>
         <ispn.cluster.labels>cluster=${project.artifactId}</ispn.cluster.labels>
     </properties>
     <dependencyManagement>
