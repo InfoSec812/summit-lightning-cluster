@@ -1,0 +1,100 @@
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 3600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - cluster-example
+        from:
+          kind: ImageStreamTag
+          namespace: labs-dev
+          name: 'cluster-example:latest'
+  replicas: 2
+  revisionHistoryLimit: 2
+  test: false
+  paused: true
+  selector:
+    app: cluster-example
+    group: com.redhat.labs.vertx
+    provider: fabric8
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: cluster-example
+        group: com.redhat.labs.vertx
+        provider: fabric8
+        version: 1.0-SNAPSHOT
+    spec:
+      containers:
+        - name: cluster-example
+          image: cluster-example:latest
+          command:
+            - java
+          args:
+            - '-jar'
+            - /deployments/cluster-example-1.0-SNAPSHOT.jar
+            - '-cluster'
+            - '-Dvertx.disableFileCPResolving=true'
+            - '-Djava.net.preferIPv4Stack=true'
+          ports:
+            - name: esmmanager
+              containerPort: 5600
+              protocol: TCP
+            - containerPort: 5701
+              protocol: TCP
+            - name: asr
+              containerPort: 7800
+              protocol: TCP
+            - containerPort: 5702
+              protocol: TCP
+            - name: esmagent
+              containerPort: 5601
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: ddi-tcp-1
+              containerPort: 8888
+              protocol: TCP
+            - name: vns-tp
+              containerPort: 7802
+              protocol: TCP
+            - name: a1-msc
+              containerPort: 5602
+              protocol: TCP
+            - name: ssp-client
+              containerPort: 7801
+              protocol: TCP
+            - name: supportassist
+              containerPort: 5700
+              protocol: TCP
+            - name: jolokia
+              containerPort: 8778
+              protocol: TCP
+          env:
+            - name: KUBE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
