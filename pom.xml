@@ -110,6 +110,7 @@
                         <argument>-cluster</argument>
                         <argument>-Djava.net.preferIPv4Stack=true</argument>
                         <argument>-Djgroups.mping.mcast_addr=239.5.5.5</argument>
+                        <argument>-Dvertx.disableFileCPResolving=true</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -144,6 +145,7 @@
                                         <arg>-jar</arg>
                                         <arg>/deployments/${project.build.finalName}.${project.packaging}</arg>
                                         <arg>-Djboss.default.jgroups.stack=kubernetes</arg>
+                                        <arg>-Dvertx.disableFileCPResolving=true</arg>
                                         <arg>-cluster</arg>
                                     </exec>
                                 </cmd>
@@ -156,6 +158,7 @@
                                         <arg>-jar</arg>
                                         <arg>/deployments/${project.build.finalName}.${project.packaging}</arg>
                                         <arg>-Djboss.default.jgroups.stack=kubernetes</arg>
+                                        <arg>-Dvertx.disableFileCPResolving=true</arg>
                                         <arg>-cluster</arg>
                                     </exec>
                                 </entryPoint>
